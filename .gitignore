@@ -1,4 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
+## Self-definition
+_config.py
+
 ### VirtualEnv template
 # Virtualenv
 # http://iamzed.com/2009/05/07/a-primer-on-virtualenv/

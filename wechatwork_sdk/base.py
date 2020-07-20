@@ -1,12 +1,25 @@
 # -*- coding: utf-8 -*-
 
 
+import json
+
+import requests
+
+from .exception import WeChatWorkSDKException
+
+
+# 企业微信API根URL
+WECHATWORK_API_ROOT_URL = 'https://qyapi.weixin.qq.com/cgi-bin/'
+
+
 def get_access_token(corpid, secret) -> (str, int):
     """
     获取Access Token
     :param corpid: 企业ID
     :param secret: 应用密钥
-    :return:
+    :return: (access_token, expires_in)
+        - access_token: 获取到的凭证，最长为512字节
+        - expires_in: 凭证的有效时间（秒），通常为7200
     """
     url = WECHATWORK_API_ROOT_URL + 'gettoken?corpid={corpid}&corpsecret={secret}'\
         .format(corpid=corpid, secret=secret)
@@ -14,30 +27,20 @@ def get_access_token(corpid, secret) -> (str, int):
     if int(data['errcode']) == 0:
         return data['access_token'], int(data['expires_in'])
     else:
-        raise WeChatWorkSDKException(data['errmsg'])
+        raise WeChatWorkSDKException(data)
 
 
 class WeChatWorkSDK(object):
     """
     企业微信SDK基本类
     """
-    def __init__(self, corpid=None, secret=None, name=None):
+    def __init__(self, corpid, secret):
         """
         :param corpid:
         :param secret:
         :param name: 自定义的名称
         """
-        self.name = name
-        if self.name is not None:
-            self._access_token_key = 'wechatwork_access_token_' + self.name
-        else:
-            self._access_token_key = 'wechatwork_access_token'
-        if corpid is None:
-            # 默认为Django settings传入的corpid
-            corpid = CORPID
         self.corpid = corpid
-        if secret is None:
-            raise WeChatWorkSDKException("secret不可以为空")
         self.secret = secret
         self._api_root_url = WECHATWORK_API_ROOT_URL
 
@@ -47,20 +50,9 @@ class WeChatWorkSDK(object):
         获取access_token
         详细说明：https://work.weixin.qq.com/api/doc/90000/90135/91039
 
-        首先从缓存中获取；若缓存不存在或者过期，则通过调用接口从企业微信服务器获取并缓存
-        property装饰器只是把方法变成属性，每次被调用时依然会调用方法并且返回属性，不会出现缓存过期依然被使用的情况
         :return access_token: str
         """
-        try:
-            access_token = cache.get(self._access_token_key)
-        except KeyError:
-            access_token = None
-
-        # access_token缓存为空或者不存在此缓存数据时，都处理为None并且重新请求
-        if access_token is None:
-            access_token, expires_in = get_access_token(corpid=self.corpid, secret=self.secret)
-            cache.set(self._access_token_key, access_token, timeout=int(expires_in))
-
+        access_token, expires_in = get_access_token(corpid=self.corpid, secret=self.secret)
         return access_token
 
     def request_api(self, method, api, query_params=None, data=None):
@@ -91,30 +83,4 @@ class WeChatWorkSDK(object):
         return self.request_api('POST', api, query_params, data)
 
 
-class WeChatWorkCallbackSDK(object):
-    """
-    企业微信回调SDK基本类，用于实现内部系统和企业微信客户端的双向通信
-    详细说明：https://work.weixin.qq.com/api/doc/90000/90135/90930
-    """
-    def __init__(self, token, encoding_aes_key):
-        self.token = token
-        self.encoding_aes_key = encoding_aes_key
-
-    def encrypt(self, data: dict) -> str:
-        """
-        服务端加密数据
-        :param data:
-        :param timestamp:
-        :param nonce:
-        :return:
-        """
-        return encrypt_msg(data, token=self.token, encoding_aes_key=self.encoding_aes_key)
-
-    def decrypt(self, xml, sign, timestamp, nonce) -> dict:
-        """
-        验证并解密来自客户端的数据
-        :return:
-        """
-        return decrypt_msg(xml_text=xml, encrypt_sign=sign, timestamp=timestamp, nonce=nonce,
-                           token=self.token, encoding_aes_key=self.encoding_aes_key)
 
