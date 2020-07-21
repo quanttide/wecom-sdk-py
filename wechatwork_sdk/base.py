@@ -27,7 +27,7 @@ def get_access_token(corpid, secret) -> (str, int):
     if int(data['errcode']) == 0:
         return data['access_token'], int(data['expires_in'])
     else:
-        raise WeChatWorkSDKException(data)
+        raise WeChatWorkSDKException(data['errcode'], data['errmsg'])
 
 
 class WeChatWorkSDK(object):
@@ -38,11 +38,11 @@ class WeChatWorkSDK(object):
         """
         :param corpid:
         :param secret:
-        :param name: 自定义的名称
         """
         self.corpid = corpid
         self.secret = secret
         self._api_root_url = WECHATWORK_API_ROOT_URL
+        self._access_token = None
 
     @property
     def access_token(self):
@@ -52,8 +52,11 @@ class WeChatWorkSDK(object):
 
         :return access_token: str
         """
-        access_token, expires_in = get_access_token(corpid=self.corpid, secret=self.secret)
-        return access_token
+        # 新创建的实例或者access_token过期，请求access_token并缓存
+        if self._access_token is None:
+            access_token, expires_in = get_access_token(corpid=self.corpid, secret=self.secret)
+            self._access_token = access_token
+        return self._access_token
 
     def request_api(self, method, api, query_params=None, data=None):
         url = self._api_root_url + api
@@ -64,14 +67,23 @@ class WeChatWorkSDK(object):
         query_params['access_token'] = self.access_token
 
         # API接口要求必须以JSON格式传入数据
-        response = requests.request(method, url, params=query_params, json=data)
-        return_data = json.loads(response.content)
+        content = requests.request(method, url, params=query_params, json=data).content
+        if not content:
+            raise WeChatWorkSDKException('self-defined', 'API接口不存在')
+        return_data = json.loads(content)
+
+        # 处理access_token过期
+        if int(return_data['errcode']) == 42001:
+            # 清空缓存的access_token
+            self._access_token = None
+            # 重新请求
+            return self.request_api(method, api, query_params, data)
 
         # 抛出异常
-        if return_data['errcode'] != 0:
-            raise WeChatWorkSDKException(return_data)
+        if int(return_data['errcode']) != 0:
+            raise WeChatWorkSDKException(return_data['errcode'], return_data['errmsg'])
 
-        # 返回时删除errcode和errmsg
+        # 返回正常数据时删除errcode=0和errmsg='ok'
         return_data.pop('errcode')
         return_data.pop('errmsg')
         return return_data
