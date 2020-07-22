@@ -7,8 +7,7 @@
 
 本项目遵循[Apache 2.0](LICENSE)协议。
 
-
-## Contributor
+## Contributors
 
 - 发起者：[张果](https://github.com/Guo-Zhang)
 - 维护者：[张果](https://github.com/Guo-Zhang) 、
