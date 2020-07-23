@@ -6,6 +6,7 @@ import json
 import requests
 
 from .exception import WeChatWorkSDKException
+from .mixin import ValidationMixin
 
 
 # 企业微信API根URL
@@ -30,10 +31,12 @@ def get_access_token(corpid, secret) -> (str, int):
         raise WeChatWorkSDKException(data['errcode'], data['errmsg'])
 
 
-class WeChatWorkSDK(object):
+class WeChatWorkSDK(ValidationMixin):
     """
     企业微信SDK基本类
     """
+    API_ROOT_URL = WECHATWORK_API_ROOT_URL
+
     def __init__(self, corpid, secret):
         """
         :param corpid:
@@ -41,7 +44,6 @@ class WeChatWorkSDK(object):
         """
         self.corpid = corpid
         self.secret = secret
-        self._api_root_url = WECHATWORK_API_ROOT_URL
         self._access_token = None
 
     @property
@@ -58,8 +60,15 @@ class WeChatWorkSDK(object):
             self._access_token = access_token
         return self._access_token
 
+    def _clean_cached_access_token(self):
+        self._access_token = None
+
     def request_api(self, method, api, query_params=None, data=None):
-        url = self._api_root_url + api
+        # 验证数据
+        self.validate(**{**query_params, **data})
+
+        # 拼接API的URL
+        url = self.API_ROOT_URL + api
 
         # 默认必须传入access_token
         if query_params is None:
@@ -75,7 +84,7 @@ class WeChatWorkSDK(object):
         # 处理access_token过期
         if int(return_data['errcode']) == 42001:
             # 清空缓存的access_token
-            self._access_token = None
+            self._clean_cached_access_token()
             # 重新请求
             return self.request_api(method, api, query_params, data)
 

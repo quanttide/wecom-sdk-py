@@ -4,9 +4,7 @@ from .base import WeChatWorkSDK
 
 
 class UserSDK(WeChatWorkSDK):
-    def __init__(self, corpid, contact_secret):
-        super().__init__(corpid, contact_secret)
-        self._api_root_url = self._api_root_url + 'user/'
+    API_ROOT_URL = WeChatWorkSDK.API_ROOT_URL + 'user/'
 
     def create(self, userid, name, **kwargs):
         pass
@@ -21,6 +19,5 @@ class UserSDK(WeChatWorkSDK):
 
 
 class DepartmentSDK(WeChatWorkSDK):
-    def __init__(self, corpid, contact_secret):
-        super().__init__(corpid, contact_secret)
-        self._api_root_url = self._api_root_url + 'department/'
+    API_ROOT_URL = WeChatWorkSDK.API_ROOT_URL + 'department/'
+
