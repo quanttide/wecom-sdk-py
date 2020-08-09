@@ -65,6 +65,8 @@ class WeChatWorkSDK(ValidationMixin):
 
     def request_api(self, method, api, query_params=None, data=None):
         # 验证数据
+        if data is None:
+            data = dict()
         self.validate(**{**query_params, **data})
 
         # 拼接API的URL
