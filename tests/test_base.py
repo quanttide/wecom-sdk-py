@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import unittest
+import sys
+sys.path.append("/home/john/GitHub/wechatwork-sdk-py")
 
 from wechatwork_sdk.base import WeChatWorkSDK
-from ._config import CORPID, CONTACT_SECRET
+from _config import CORPID, CONTACT_SECRET
 
 
 class WeChatWorkSDKTestCase(unittest.TestCase):
@@ -17,6 +19,7 @@ class WeChatWorkSDKTestCase(unittest.TestCase):
 
     def test_request_api(self):
         return_data = self.wechatwork_sdk.request_api('GET', 'user/simplelist', {'department_id': 1})
+        # print(return_data)
         self.assertTrue('userlist' in return_data)
 
     def test_refresh_access_token(self):
@@ -27,7 +30,10 @@ class WeChatWorkSDKTestCase(unittest.TestCase):
         :return:
         """
         self.assertTrue(True, False)
-
+    def test_get_api(self):
+        return_data = self.wechatwork_sdk.get_api('user/simplelist', {'department_id': 1})
+        print(return_data)
+        self.assertTrue(return_data)
 
 if __name__ == '__main__':
     unittest.main()

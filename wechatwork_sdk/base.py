@@ -65,10 +65,20 @@ class WeChatWorkSDK(ValidationMixin):
 
     def request_api(self, method, api, query_params=None, data=None):
         # 验证数据
-        self.validate(**{**query_params, **data})
+        # 若data为None则会报错
+        if data is None:
+            data = dict()
+        # self.validate(**{**query_params, **data})
 
-        # 拼接API的URL
-        url = self.API_ROOT_URL + api
+        # 拼接API的URL 
+        # 因存在两个特殊的API_url因此使用if语句进行处理
+        if api == 'invite':
+            url = 'https://qyapi.weixin.qq.com/cgi-bin/batch/invite'
+        elif api == 'get_join_qrcode':
+            url = 'https://qyapi.weixin.qq.com/cgi-bin/corp/' + api
+        else:
+            url = self.API_ROOT_URL + api
+        
 
         # 默认必须传入access_token
         if query_params is None:

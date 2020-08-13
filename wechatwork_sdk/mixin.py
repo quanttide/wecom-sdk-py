@@ -2,8 +2,8 @@
 
 
 class ValidationMixin(object):
-    def validate_userid(self):
-        pass
+    # def validate_userid(self,**kwargs):
+        # pass
 
     def validate(self, **kwargs):
         for key, value in kwargs.items():
