@@ -160,7 +160,7 @@ class UserSDK(WeChatWorkSDK,WeChatWorkError):
         if userid in simplelist:
             return self.get_api(api = 'authsucc',query_params = {'userid':userid})
         else:
-            return {'error':'不存在该id'}
+            return
 
     def get_active_stat(self,date):
         # param date :需要得到指定日期的活跃 成员

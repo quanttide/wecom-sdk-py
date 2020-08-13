@@ -4,8 +4,8 @@ import sys
 sys.path.append("/home/john/GitHub/wechatwork-sdk-py")
 # print('__file__={0:<35} | __name__={1:<20} | __package__={2:<20}'.format(__file__,__name__,str(__package__)))
 from wechatwork_sdk.base import WeChatWorkSDK
-from wechatwork_sdk.contact import UserSDK,DepartmentSDK,DepartmentTagSDK,BatchSDK
-from _config import CORPID,upload, CONTACT_SECRET,userid,create_userid,create_name,create_department,create_email,dp_name,dp_name_en,parentid,dp_id,query_params
+from wechatwork_sdk.contact import UserSDK,DepartmentSDK,DepartmentTagSDK
+from _config import CORPID,upload, CONTACT_SECRET,userid,create_userid,create_name,create_department,create_email,dp_name,dp_name_en,parentid,dp_id,query_params,openid
 
 
 class WeChatWorkSDKUserSDK(unittest.TestCase):
@@ -32,7 +32,7 @@ class WeChatWorkSDKUserSDK(unittest.TestCase):
         
     # 测试读取成员信息
     def test_get(self):
-        return_data = self.userskd.get('')
+        return_data = self.userskd.get(create_userid)
         self.assertTrue(return_data)
     
     # 测试更新成员信息
@@ -57,17 +57,17 @@ class WeChatWorkSDKUserSDK(unittest.TestCase):
 
     # 测试使用userid转openid
     def test_convert_to_openid(self):
-        return_data = self.userskd.convert_to_openid('')
+        return_data = self.userskd.convert_to_openid(userid)
         self.assertTrue(return_data)
 
     # 测试使用openid转userid
     def test_convert_to_userid(self):
-        return_data = self.userskd.convert_to_userid('')
+        return_data = self.userskd.convert_to_userid(openid)
         self.assertTrue('userid' in return_data)
 
     # 测试开启二次验证
     def test_authsucc(self):
-        return_data = self.userskd.authsucc(userid)
+        return_data = self.userskd.authsucc(create_userid)
         self.assertFalse(return_data)
 
     # 测试邀请成员
@@ -152,8 +152,11 @@ class WeChatWorkSDKTagSDK(unittest.TestCase):
     # 测试删除标签成员信息
     def test_deletetagusers(self):
         return_data = self.tagsdk.deltagusers(1,'zhangsannnn')
-        if return_data['invalidparty'] == []:
-            return_data = None
+        if return_data is not None:
+            if 'invalidparty' in return_data:
+                if return_data['invalidparty'] == None:
+                    return_data = None
+                    self.assertFalse(return_data)
         self.assertFalse(return_data)
 
     # 测试获取标签列表
