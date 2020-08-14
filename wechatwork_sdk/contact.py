@@ -60,7 +60,12 @@ class UserSDK(WeChatWorkSDK,WeChatWorkError):
         param department_id: 获取的部门id
         param fetch_child:是否递归获取子部门下面的成员：1-递归获取，0-只获取本部门,此处默认为0
         """
-        return self.get_api(api='list',query_params={'department_id':department_id,'fetch_child':fetch_child})
+        # 获取部门成员详情，并验证部门是否存在
+        partyidlist = _config.partyidlist
+        if department_id in partyidlist:
+            return self.get_api(api='list',query_params={'department_id':department_id,'fetch_child':fetch_child})
+        else:
+            return {'error':'不存在该部门'}
 
     def create(self,query_params):
         """
