@@ -9,7 +9,7 @@ class MessageSDK(WeChatWorkSDK):
         self.API_ROOT_URL = self.API_ROOT_URL + 'message/'
 
 
-    def sendmessage(self, msgtype, safe=0, enable_id_trans=0, enable_duplicate_check=0, \
+    def sendmessage(self, msgtype, safe=0, enable_id_trans=0, enable_duplicate_check=0,
                     duplicate_check_interval=1800, btntxt='详情', **kwargs):
         """
 
@@ -83,7 +83,8 @@ class MessageSDK(WeChatWorkSDK):
 
         return self.post_api(api='send', query_params=dict(),
                              data={'msgtype': msgtype, 'safe':safe, 'enable_id_trans':enable_id_trans,
-                                   'enable_duplicate_check':enable_duplicate_check, 'duplicate_check_interval':duplicate_check_interval,
+                                   'enable_duplicate_check':enable_duplicate_check,
+                                   'duplicate_check_interval':duplicate_check_interval,
                                    'btntxt':btntxt, **kwargs})
 
     def update_taskcard(self, userids, agentid, task_id, clicked_key):
@@ -104,7 +105,8 @@ class MessageSDK(WeChatWorkSDK):
             assert len(userids) <= 1000
 
         return self.post_api(api='update_taskcard', query_params=dict(),
-                             data={'userids':list(userids), 'agentid':agentid, 'task_id':task_id, 'clicked_key':clicked_key})
+                             data={'userids':list(userids), 'agentid':agentid, 'task_id':task_id,
+                                   'clicked_key':clicked_key})
 
     def get_statistics(self, **kwargs):
         """
@@ -131,7 +133,8 @@ class AppchatSDK(WeChatWorkSDK):
 
         :param userlist: 群成员id列表。至少2人，至多2000人
         :param owner: 指定群主的id。如果不指定，系统会随机从userlist中选一人作为群主
-        :param chatid: 群聊的唯一标志，不能与已有的群重复；字符串类型，最长32个字符。只允许字符0-9及字母a-zA-Z。如果不填，系统会随机生成群id
+        :param chatid: 群聊的唯一标志，不能与已有的群重复；字符串类型，最长32个字符。
+                        只允许字符0-9及字母a-zA-Z。如果不填，系统会随机生成群id
         :param kwargs:
             -name: 群聊名，最多50个utf8字符，超过将截断
         """
@@ -174,7 +177,7 @@ class AppchatSDK(WeChatWorkSDK):
             assert len(kwargs['name']) <= 4*50
 
         appchat_info = self.post_api(api='create', query_params=dict(), data={'userlist':userlist, 'owner':owner,
-                                                                     'chatid':chatid, **kwargs})
+                                                                              'chatid':chatid, **kwargs})
         # 群聊创建成功，显示信息
         print(appchat_info)
 
@@ -311,7 +314,8 @@ class LinkedcorpMessageSDK(WeChatWorkSDK):
         # 其余参数放入messagelist进行限制，参数错误返回False
         assert messagelist(msgtype=msgtype, **kwargs)
 
-        return self.post_api(api='send', query_params=dict(), data={'msgtype':msgtype, 'toall':toall, 'safe':safe, **kwargs})
+        return self.post_api(api='send', query_params=dict(), data={'msgtype':msgtype, 'toall':toall,
+                                                                    'safe':safe, **kwargs})
 
 
 
