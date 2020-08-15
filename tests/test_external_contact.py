@@ -1,13 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import unittest
-
-import sys
-
-sys.path.append('C:\\Users\\陈方舟\\Desktop\\Python\\QuantTide\\wechatwork-sdk-py')
-
 from wechatwork_sdk.base import WeChatWorkSDK
-from tests._config import CORPID, CONTACT_SECRET
+from ._config import CORPID, CONTACT_SECRET
 from wechatwork_sdk.external_contact import ExternalContactSDK
 from wechatwork_sdk.exception import WeChatWorkSDKException
 
