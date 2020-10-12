@@ -13,7 +13,9 @@ class MessageSDKTestCase(unittest.TestCase):
 
     # 测试是否能正常发送消息
     def test_send_message(self):
-        self.message_sdk.send_message(msgtype='text', agentid=CLOCK_IN_ID, touser='LiXiaoJun', text={'content': '打卡'})
+        return_data = self.message_sdk.send_message(msgtype='text', agentid=CLOCK_IN_ID,
+                                                    touser='LiXiaoJun', text={'content': '打卡'})
+        self.assertNotIn('errcode',return_data)
 
     # touser超出1000
     def test_touser(self):
@@ -29,8 +31,9 @@ class MessageSDKTestCase(unittest.TestCase):
 
     # 测试是否能正常更新taskcard消息
     def test_update_taskcard(self):
-        self.message_sdk.update_taskcard(userids=['LiXiaoJun'], agentid=CLOCK_IN_ID, task_id='taskid123',
-                                         clicked_key='key111')
+        return_data = self.message_sdk.update_taskcard(userids=['LiXiaoJun'], agentid=CLOCK_IN_ID, task_id='taskid123',
+                                                       clicked_key='key111')
+        self.assertNotIn('errcode', return_data)
 
     # 缺少agentid
     def test_update_taskcard_agentid(self):
@@ -45,7 +48,8 @@ class MessageSDKTestCase(unittest.TestCase):
 
     # 测试是否能正常统计消息发送
     def test_get_statistics(self):
-        self.message_sdk.get_statistics(time_type=0)
+        return_data = self.message_sdk.get_statistics(time_type=0)
+        self.assertNotIn('errcode', return_data)
 
 
 class AppchatSDKTestCase(unittest.TestCase):
@@ -55,8 +59,9 @@ class AppchatSDKTestCase(unittest.TestCase):
 
     # 测试是够能正常创建appchat
     def _create_appchat(self):
-        self.appchat_sdk.create_appchat(name='NAME', owner='LiXiaoJun', userlist=['LiXiaoJun', 'ChenFan'],
+        return_data = self.appchat_sdk.create_appchat(name='NAME', owner='LiXiaoJun', userlist=['LiXiaoJun', 'ChenFan'],
                                         chatid='ID')
+        self.assertNotIn('errcode', return_data)
 
     # userlist个数少于2个
     def test_userlist(self):
@@ -65,11 +70,13 @@ class AppchatSDKTestCase(unittest.TestCase):
 
     # 测试不添加owner是否会自动生成
     def test_owner(self):
-        self.appchat_sdk.create_appchat(name='NAME', userlist=['ChenFan', 'LiXiaoJun'], chatid='CH')
+        return_data = self.appchat_sdk.create_appchat(name='NAME', userlist=['ChenFan', 'LiXiaoJun'], chatid='CH')
+        self.assertNotIn('errcode', return_data)
 
     # 不输入chatid自动生成chatid
     def test_chatid(self):
-        self.appchat_sdk.create_appchat(name='NAM', userlist=['ChenFan', 'LiXiaoJun'])
+        return_data = self.appchat_sdk.create_appchat(name='NAM', userlist=['ChenFan', 'LiXiaoJun'])
+        self.assertNotIn('errcode', return_data)
 
     # name超过50个utf-8字符
     def test_name(self):
@@ -79,11 +86,13 @@ class AppchatSDKTestCase(unittest.TestCase):
 
     # 测试是否能正常获取appchat信息
     def test_get_appchat(self):
-        self.appchat_sdk.get_appchat(chatid='CHATID')
+        return_data = self.appchat_sdk.get_appchat(chatid='CHATID')
+        self.assertNotIn('errcode', return_data)
 
     # 测试是否能正常更新appchat信息
     def test_update_appchat(self):
-        self.appchat_sdk.update_appchat(name='NAM', owner='LiXiaoJun', chatid='CHATID')
+        return_data = self.appchat_sdk.update_appchat(name='NAM', owner='LiXiaoJun', chatid='CHATID')
+        self.assertNotIn('errcode', return_data)
 
     def test_add_user_list(self):
         # add_user_list使得user_list超出上限2000
@@ -106,8 +115,9 @@ class AppchatSDKTestCase(unittest.TestCase):
 
     # 测试是否能正常发送appchat消息
     def test_send_appchat(self):
-        self.appchat_sdk.send_appchat(chatid='CHATID', msgtype='text',
+        return_data = self.appchat_sdk.send_appchat(chatid='CHATID', msgtype='text',
                                       text={'content': "你的快递已到\n请携带工卡前往邮件中心领取"})
+        self.assertNotIn('errcode', return_data)
 
     # appchat的msgtype不包括miniprogram_notice消息
     def test_send_appchat_msgtype(self):
@@ -128,8 +138,9 @@ class LinkedcorpMessageSDKTestCase(unittest.TestCase):
 
     # 测试是够能正常发送linkedcorpmessage消息
     def test_linkedcorpmessage(self):
-        self.linkedcorpmessage_sdk.send_linkedcorpmessage(msgtype='text', agentid=CLOCK_IN_ID, touser=['LiXiaoJun'],
+        return_data = self.linkedcorpmessage_sdk.send_linkedcorpmessage(msgtype='text', agentid=CLOCK_IN_ID, touser=['LiXiaoJun'],
                                                           text={"content": "你的快递已到。"})
+        self.assertNotIn('errcode', return_data)
 
     # toall参数不为1或0
     def test_toall(self):
