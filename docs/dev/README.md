@@ -9,7 +9,7 @@
 - exception.py: 异常类
 - mixin.py: Mixin工具类
 
-API模块：
+其他API模块：
 - agent.py: 应用管理
 - contact.py: 通讯录管理
 - corgroup.py: 企业互联

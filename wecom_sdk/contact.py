@@ -1,23 +1,35 @@
 # -*- coding: utf-8 -*-
 
-from wecom_sdk.base.client import WeChatWorkSDK
+from wecom_sdk.base.client import WeComBaseAPIClient
+from wecom_sdk.oauth2 import WeComAuthAPIClient
 
 
-class UserSDK(WeChatWorkSDK):
-    API_ROOT_URL = WeChatWorkSDK.API_ROOT_URL + 'user/'
+class UserAPIClient(WeComAuthAPIClient):
+    """
+    成员管理API
+    """
+    def request_user_api(self, method, api, query_params=None, data=None):
+        api = 'user/' + api
+        return self.request_api(method, api, query_params, data)
 
-    def create(self, userid, name, **kwargs):
+    def get_user_api(self, api, query_params=None, data=None):
+        return self.request_user_api('GET', api, query_params, data)
+
+    def post_user_api(self, api, query_params=None, data=None):
+        return self.request_user_api('POST', api, query_params, data)
+
+    def create_user(self, userid, name, **kwargs):
         pass
 
-    def get(self, userid):
+    def get_user(self, userid):
         """
         读取成员
         :param userid: 成员UserID。对应管理端的帐号，企业内必须唯一。不区分大小写，长度为1~64个字节。
         :return:
         """
-        return self.get_api(api='get', query_params={'userid': userid})
+        return self.get_user_api(api='get', query_params={'userid': userid})
 
 
-class DepartmentSDK(WeChatWorkSDK):
-    API_ROOT_URL = WeChatWorkSDK.API_ROOT_URL + 'department/'
+class DepartmentAPIClient(WeComBaseAPIClient):
+    pass
 

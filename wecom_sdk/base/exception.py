@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 
-class WeChatWorkSDKException(Exception):
+class WeComSDKException(Exception):
     def __init__(self, errcode, errmsg):
-        self.errcode = errcode
+        self.errcode = str(errcode)
         self.errmsg = errmsg
 
     def __str__(self):
-        return "WeChatWorkSDK Error {errcode}: {errmsg}".format(errcode=self.errcode, errmsg=self.errmsg)
+        return "\nError {errcode}: {errmsg}".format(errcode=self.errcode, errmsg=self.errmsg)

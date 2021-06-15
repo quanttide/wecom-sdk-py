@@ -5,12 +5,12 @@ import json
 
 import requests
 
-from wecom_sdk.base.exception import WeChatWorkSDKException
-from wecom_sdk.common.mixin import ValidationMixin
+from wecom_sdk.base.exception import WeComSDKException
+from wecom_sdk.base.mixin import ValidationMixin
 
 
 # 企业微信API根URL
-WECHATWORK_API_ROOT_URL = 'https://qyapi.weixin.qq.com/cgi-bin/'
+WECOM_API_ROOT_URL = 'https://qyapi.weixin.qq.com/cgi-bin/'
 
 
 def get_access_token(corpid, secret) -> (str, int):
@@ -22,20 +22,20 @@ def get_access_token(corpid, secret) -> (str, int):
         - access_token: 获取到的凭证，最长为512字节
         - expires_in: 凭证的有效时间（秒），通常为7200
     """
-    url = WECHATWORK_API_ROOT_URL + 'gettoken?corpid={corpid}&corpsecret={secret}'\
+    url = WECOM_API_ROOT_URL + 'gettoken?corpid={corpid}&corpsecret={secret}'\
         .format(corpid=corpid, secret=secret)
-    data = json.loads(requests.get(url).content)
+    data = requests.get(url).json()
     if int(data['errcode']) == 0:
         return data['access_token'], int(data['expires_in'])
     else:
-        raise WeChatWorkSDKException(data['errcode'], data['errmsg'])
+        raise WeComSDKException(data['errcode'], data['errmsg'])
 
 
-class WeChatWorkSDK(ValidationMixin):
+class WeComBaseAPIClient(object):
     """
-    企业微信SDK基本类
+    企业微信基本APIClient类
     """
-    API_ROOT_URL = WECHATWORK_API_ROOT_URL
+    API_ROOT_URL = WECOM_API_ROOT_URL
 
     def __init__(self, corpid, secret):
         """
@@ -64,9 +64,6 @@ class WeChatWorkSDK(ValidationMixin):
         self._access_token = None
 
     def request_api(self, method, api, query_params=None, data=None):
-        # 验证数据
-        self.validate(**{**query_params, **data})
-
         # 拼接API的URL
         url = self.API_ROOT_URL + api
 
@@ -78,7 +75,7 @@ class WeChatWorkSDK(ValidationMixin):
         # API接口要求必须以JSON格式传入数据
         content = requests.request(method, url, params=query_params, json=data).content
         if not content:
-            raise WeChatWorkSDKException('self-defined', 'API接口不存在')
+            raise WeComSDKException('self-defined', 'API接口不存在')
         return_data = json.loads(content)
 
         # 处理access_token过期
@@ -90,7 +87,7 @@ class WeChatWorkSDK(ValidationMixin):
 
         # 抛出异常
         if int(return_data['errcode']) != 0:
-            raise WeChatWorkSDKException(return_data['errcode'], return_data['errmsg'])
+            raise WeComSDKException(return_data['errcode'], return_data['errmsg'])
 
         # 返回正常数据时删除errcode=0和errmsg='ok'
         return_data.pop('errcode')
