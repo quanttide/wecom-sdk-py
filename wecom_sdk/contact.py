@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .base import WeChatWorkSDK
+from wecom_sdk.base.client import WeChatWorkSDK
 
 
 class UserSDK(WeChatWorkSDK):

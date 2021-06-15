@@ -1,12 +1,12 @@
 from distutils.core import setup
 
 setup(
-    name='wechatwork-sdk-py',
+    name='wecom-sdk-py',
     version='0.0.1',
-    packages=['wechatwork_sdk'],
+    packages=['wecom_sdk'],
     url='quanttide.com',
-    license='MIT',
+    license='Apache 2.0',
     author='QuantTide Inc.',
-    author_email='zhangguo@quanttide.com',
-    description='企业微信第三方SDK-Python版本'
+    author_email='tech@quanttide.com',
+    description='企业微信Python服务端SDK'
 )

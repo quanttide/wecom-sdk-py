@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .crypt import encrypt_msg, decrypt_msg
+from wecom_sdk.base.crypt import encrypt_msg, decrypt_msg
 
 
 class WeChatWorkCallbackSDK(object):

@@ -5,8 +5,8 @@ import json
 
 import requests
 
-from .exception import WeChatWorkSDKException
-from .mixin import ValidationMixin
+from wecom_sdk.base.exception import WeChatWorkSDKException
+from wecom_sdk.common.mixin import ValidationMixin
 
 
 # 企业微信API根URL

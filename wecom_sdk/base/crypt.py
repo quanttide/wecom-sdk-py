@@ -14,7 +14,7 @@ import xmltodict
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad
 
-from .exception import WeChatWorkSDKException
+from wecom_sdk.base.exception import WeChatWorkSDKException
 
 
 # ----- 工具函数 -----
