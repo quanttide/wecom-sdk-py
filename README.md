@@ -1,14 +1,9 @@
-# wechatwork-sdk-py
+# wecom-sdk-py
 
-量潮科技出品的企业微信第三方Python SDK
+量潮科技出品的企业微信Python服务端SDK。
 
 
 ## License
 
 本项目遵循[Apache 2.0](LICENSE)协议。
 
-## Contributors
-
-- 发起者：[张果](https://github.com/Guo-Zhang)
-- 维护者：[张果](https://github.com/Guo-Zhang) 、
-- 贡献者：
